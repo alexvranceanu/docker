@@ -9,5 +9,3 @@ Todo list:
 - add multiple subnets
 - add support for Availability Zone separation
 
-THANKS:
-- @stefanszasz for obtaining the Private IP of the "lord" automatically instead of hardcoding
