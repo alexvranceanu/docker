@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Docker Swarm Cluster Template. Currently creates a single master swarm node.",
+  "Description": "Docker 1.12.1 Swarm Cluster Template.",
   "Parameters": {
     "KeyName": {
       "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instance",
@@ -33,13 +33,13 @@
           {
             "Key": "Application",
             "Value": {
-              "Ref": "AWS::StackId"
+              "Ref": "AWS::StackName"
             }
           },
           {
             "Key": "Name",
             "Value": {
-              "Ref": "AWS::StackId"
+              "Ref": "AWS::StackName"
             }
           }
         ]
@@ -379,26 +379,14 @@
             "Fn::Join": [
               "",
               [
-                "#!/bin/bash\n",
-                "tee /etc/yum.repos.d/docker.repo <<-EOF\n",
-                "[dockerrepo]\n",
-                "name=Docker Repository\n",
-                "baseurl=https://yum.dockerproject.org/repo/main/centos/7\n",
-                "enabled=1\n",
-                "gpgcheck=1\n",
-                "gpgkey=https://yum.dockerproject.org/gpg\n",
-                "EOF\n",
-                "\n",
+                "#!/bin/sh\n",
+                "curl -sSL https://experimental.docker.com | sh\n",
+                "usermod -G docker centos\n",
                 "mkdir /tokens\n",
                 "echo '/tokens *(ro)' > /etc/exports\n",
-                "systemctl start nfs\n",
-                "\n",
-                "yum -y install docker-engine\n",
-                "\n",
-                "service docker start\n",
-                "\n",
+                "systemctl enable nfs ; systemctl start nfs\n",
+                "systemctl enable docker ; systemctl start docker\n",
                 "docker swarm init\n",
-                "\n",
                 "echo -n `docker swarm join-token -q worker` > /tokens/worker\n",
                 "echo -n `docker swarm join-token -q manager` > /tokens/manager\n"
               ]
@@ -436,29 +424,17 @@
             "Fn::Join": [
               "",
               [
-                "#!/bin/bash\n",
-                "tee /etc/yum.repos.d/docker.repo <<-EOF\n",
-                "[dockerrepo]\n",
-                "name=Docker Repository\n",
-                "baseurl=https://yum.dockerproject.org/repo/main/centos/7\n",
-                "enabled=1\n",
-                "gpgcheck=1\n",
-                "gpgkey=https://yum.dockerproject.org/gpg\n",
-                "EOF\n",
-                "\n",
+                "#!/bin/sh\n",
+                "curl -sSL https://experimental.docker.com | sh\n",
+                "usermod -G docker centos\n",
                 "mkdir /tokens\n",
                 "mount -t nfs ",
                 { "Fn::GetAtt" : ["SwarmLordInstance", "PrivateIp"] },
                 ":/tokens /tokens\n",
-                "\n",
-                "yum -y install docker-engine\n",
-                "\n",
-                "service docker start\n",
-                "\n",
+                "systemctl enable docker ; systemctl start docker\n",
                 "docker swarm join --token `cat /tokens/worker` ",
                 { "Fn::GetAtt" : ["SwarmLordInstance", "PrivateIp"] },
                 ":2377\n",
-                "\n",
                 "umount /tokens\n"
               ]
             ]
@@ -503,7 +479,7 @@
                     "Ref": "AWS::StackName"
                   },
                   "-",
-                  "Node"
+                  "Worker"
                 ]
               ]
             },
@@ -592,29 +568,17 @@
             "Fn::Join": [
               "",
               [
-                "#!/bin/bash\n",
-                "tee /etc/yum.repos.d/docker.repo <<-EOF\n",
-                "[dockerrepo]\n",
-                "name=Docker Repository\n",
-                "baseurl=https://yum.dockerproject.org/repo/main/centos/7\n",
-                "enabled=1\n",
-                "gpgcheck=1\n",
-                "gpgkey=https://yum.dockerproject.org/gpg\n",
-                "EOF\n",
-                "\n",
+                "#!/bin/sh\n",
+                "curl -sSL https://experimental.docker.com | sh\n",
+                "usermod -G docker centos\n",
                 "mkdir /tokens\n",
                 "mount -t nfs ",
                 { "Fn::GetAtt" : ["SwarmLordInstance", "PrivateIp"] },
                 ":/tokens /tokens\n",
-                "\n",
-                "yum -y install docker-engine\n",
-                "\n",
-                "service docker start\n",
-                "\n",
+                "systemctl enable docker ; systemctl start docker\n",
                 "docker swarm join --token `cat /tokens/manager` ",
                 { "Fn::GetAtt" : ["SwarmLordInstance", "PrivateIp"] },
                 ":2377\n",
-                "\n",
                 "umount /tokens\n"
               ]
             ]
@@ -635,23 +599,6 @@
     }
   },
   "Outputs": {
-    "URL": {
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "http://",
-            {
-              "Fn::GetAtt": [
-                "SwarmLordInstance",
-                "PublicIp"
-              ]
-            }
-          ]
-        ]
-      },
-      "Description": "Newly created application URL"
-    }
   },
   "Metadata": {
     "AWS::CloudFormation::Interface": {
