@@ -27,6 +27,8 @@ These steps apply to all meetup workshop participants:
 1. Login to followin AWS console usign the credentials provided:
 https://cluj-docker-meetup.signin.aws.amazon.com/console
 
+- Select **Ireland** from top right
+
 2. Navigate to "**Services" > "**Management Tools**" > "**CloudFormation**"
 
 3. Click "**Create Stack**"
