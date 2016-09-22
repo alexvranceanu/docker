@@ -87,7 +87,7 @@ Create the Swarm **Services**:
 The app will be running at [http://YOUR_EC2_IP:5000](http://YOUR_EC2_IP:5000), and the results will be at [http://YOUR_EC2_IP:5001](http://YOUR_EC2_IP:5001).
 
 You can use any of the public IPs from your Swarm cluster.
-
+**THE FOLLOWING STEPS ARE OPTIONAL - JUST ANOTHER DEPLOYMENT METHOD**
 
 Docker experimental Distributed Application Bundle (DAB) deployment
 -----
@@ -95,7 +95,7 @@ The docker-compose.yml file from this directory is set up so a bundle can be eas
 
 Clone this repository on a Swarm manager node:
 
-> curl -O https://github.com/alexvranceanu/docker/archive/master.zip
+> curl -O https://github.com/alexvranceanu/docker-meetup-swarm/archive/master.zip
 
 Run in this directory (`cd swarm-example-voting-app`):
 
