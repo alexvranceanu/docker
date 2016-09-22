@@ -99,7 +99,7 @@ The docker-compose.yml file from this directory is set up so a bundle can be eas
 
 Clone this repository on a Swarm manager node:
 
-> curl -O https://github.com/alexvranceanu/docker-meetup-swarm/archive/master.zip
+> curl -OL https://github.com/alexvranceanu/docker-meetup-swarm/archive/master.zip
 
 Run in this directory (`cd swarm-example-voting-app`):
 
