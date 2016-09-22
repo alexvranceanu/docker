@@ -1,6 +1,7 @@
 Swarm Mode Demo with Instavote
 =========
 
+This is a simple walkthrough for setting up multiple components of an application in a Docker 1.12 Swarm cluster with multiple Swarm networks.
 
 Architecture
 -----
@@ -12,6 +13,9 @@ Architecture
 * A .NET worker which consumes votes and stores them in…
 * A Postgres database backed by a Docker volume
 * A Node.js webapp which shows the results of the voting in real time
+
+More details about the components here:
+https://github.com/docker/docker-birthday-3/blob/master/tutorial.md#dockercompetition
 
 Getting started in AWS
 ---------------
@@ -42,11 +46,12 @@ Create the Swarm **Network** configuration:
 
 
 Create the Swarm **Services**:
-		docker service create --name app-db --network backend postgres:9.4
 
-	docker service create --name app_redis --network frontend,backend redis:alpine
+	docker service create --name app_db --network backend postgres:9.4
 
-	docker service create --name app_vote --network frontend --publish 5000:80 vralex/vote
+	docker service create --name app_redis --network backend redis:alpine
+
+	docker service create --name app_vote --network frontend,backend --publish 5000:80 vralex/vote
 
 	docker service create --name app_worker --network backend vralex/worker
 
