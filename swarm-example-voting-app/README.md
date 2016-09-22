@@ -3,6 +3,10 @@ Swarm Mode Demo with Instavote
 
 This is a simple walkthrough for setting up multiple components of an application in a Docker 1.12 Swarm cluster with multiple Swarm networks.
 
+The images in this demo have been pushed to this Docker repo: https://hub.docker.com/u/vralex/
+
+You could also build your own and push them to your (private and public) repository.
+
 Architecture
 -----
 
