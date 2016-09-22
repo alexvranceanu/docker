@@ -1,0 +1,48 @@
+version: "2"
+
+services:
+  vote:
+    image: vralex/vote:latest
+    ports:
+      - "5000:80"
+    networks:
+      - frontend
+
+  redis:
+    image: redis:alpine
+    ports: ["6379"]
+    networks:
+      - frontend
+      - backend
+
+  worker:
+    image: vralex/worker:latest
+    networks:
+      - backend
+
+  db:
+    image: postgres:9.4
+    networks:
+      - backend
+
+  result:
+    image: vralex/result:latest
+    ports:
+      - "5001:80"
+      - "5858:5858"
+    networks:
+      - frontend
+      - backend
+
+networks:
+  frontend:
+    driver: overlay
+    ipam:
+      config:
+        - subnet: 10.0.100.0/24
+  backend:
+    driver: overlay
+    ipam:
+      config:
+        - subnet: 10.0.200.0/24
+
