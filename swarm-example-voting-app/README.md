@@ -3,6 +3,8 @@ Swarm Mode Demo with Instavote
 
 This is a simple walkthrough for setting up multiple components of an application in a Docker 1.12.1 Swarm cluster with multiple Swarm networks.
 
+The entire tutorial should take approximately 1 hour if you already have an AWS account.
+
 The images in this demo have been pushed to this Docker repo: https://hub.docker.com/u/vralex/
 
 Architecture
@@ -22,40 +24,66 @@ https://github.com/docker/docker-birthday-3/blob/master/tutorial.md#dockercompet
 Getting started in AWS
 ---------------
 
-These steps apply to all meetup workshop participants:
+If you're using a fresh AWS account (you can [create a free account](https://aws.amazon.com)), you will need to first initialize your account by creating a free Centos-7 instance and creating a SSH Key Pair. The tutorial in this page requires your AWS account to be subscribed to the "Centos-7" AMI.
 
-1. Login to followin AWS console usign the credentials provided:
-https://cluj-docker-meetup.signin.aws.amazon.com/console
+1. Login to your AWS account
 
-- Select **Ireland** from top right
+2. Navigate to "**Services**" > "**Compute**" > "**EC2**"
 
-2. Navigate to "**Services" > "**Management Tools**" > "**CloudFormation**"
+- Select "**Ireland**" zone from top right
+3. Navigate to "**Key Pairs**" (on the left of the page, under "NETWORK & SECURITY")
 
-3. Click "**Create Stack**"
+4. "**Create Key Pair**" with name: "**docker-meetup**"
+- make sure you save the private key, you will not be able to download it again
 
-4. Choose option "**Specify an Amazon S3 template URL**" and enter this URL:
-https://s3-eu-west-1.amazonaws.com/docker-meetup/swarm-cloudformation.tmpl
+5. Navigate to "**Instances**" (on the left of the page)
 
-5. Click **Next**
+6. Launch your first Instance using the wizard (accept all defaults), **use the "Centos-7" AMI** (search in Marketplace, part of the instance launch wizard)
 
-6. Enter "**Stack name**": user your provided username as stack name
-"**Number of additional managers**": 1
-"**Number of workers**": 1
-"**SSH Key Pair**": docker-meetup
+7. Wait for the instance to be created, then "**Terminate**" the instance
 
-7. Click **Next** until you reach the Review page, then click **Create**
-
-8. Wait 5-10 minutes :) until the stack is created
-
-9. You will find the instances created in EC2 (ask the mentors for help if you need any)
-
-10. The following steps will walk you through setting up the Swarm application, good luck! :)
+Your AWS account is now ready for the rest of the workshop.
 
 ----------
 
-**Login to one of your Swarm managers via SSH (user: centos)**
-You can download the private SSH KEY from here:
-https://s3-eu-west-1.amazonaws.com/docker-meetup/docker-meetup.pem
+These steps apply to all meetup workshop participants:
+
+1. Login to your AWS console
+
+- Select "**Ireland**" zone from top right
+
+2. Navigate to "**Services**" > "**Management Tools**" > "**CloudFormation**"
+
+3. Click "**Create Stack**"
+
+4. Download the Cloud Formation template to your computer from [here](https://raw.githubusercontent.com/alexvranceanu/docker-meetup-swarm/master/swarm-aws/swarm-cloudformation.tmpl)
+
+5. Choose option "**Upload a template to Amazon S3**" and choose the Cloud Formation template file you downloaded previously
+
+6. Click **Next**
+
+7. Enter the following details:
+
+- "**Stack name**": docker-swarm
+
+- "**Number of additional managers**": 1
+
+- "**Number of workers**": 1
+
+- "**SSH Key Pair**": docker-meetup
+
+8. Click **Next** until you reach the Review page, then click **Create**
+
+9. Wait 5-10 minutes :) until the stack is created
+
+10. Navigate to Services > Compute > EC2
+- at this point you should see three instances created by the template (one initial manager called Lord, an additional Manager and one Worker)
+
+11. The following steps will walk you through setting up the Swarm application, good luck (or have fun)! :)
+
+----------
+
+**Login to one of your Swarm managers via SSH and the private SSH Key you created initially (user: centos)**
 
 ----------
 
@@ -86,23 +114,35 @@ Create the Swarm **Services**:
 
 The app will be running at [http://YOUR_EC2_IP:5000](http://YOUR_EC2_IP:5000), and the results will be at [http://YOUR_EC2_IP:5001](http://YOUR_EC2_IP:5001).
 
-You can use any of the public IPs from your Swarm cluster.
+You can use any of the public IPs from your Swarm cluster (the ones that start with 52.x.y.z).
 
 ----
 
-**THE FOLLOWING STEPS ARE OPTIONAL - JUST ANOTHER DEPLOYMENT METHOD**
+**THE FOLLOWING STEPS ARE OPTIONAL AND YOU NEED TO DELETE THE SERVICES AND NETWORKS CREATED**
 ----
 
 Docker experimental Distributed Application Bundle (DAB) deployment
 -----
+
+First, delete the services and networks created previously:
+
+	docker service rm app_db app_redis app_vote app_worker app_result
+
+	docker network rm frontend backend
+
+
 The docker-compose.yml file from this directory is set up so a bundle can be easily created from it.
 
-Clone this repository on a Swarm manager node:
+This was tested in Docker 1.12.1 and may not work in future version of Docker as it is an experimental feature.
+
+Clone this repository on a Swarm manager node (download and unzip):
 
 > curl -OL https://github.com/alexvranceanu/docker-meetup-swarm/archive/master.zip
+> sudo yum -y install unzip
+> unzip master.zip
+> cd docker-meetup-swarm-master/swarm-example-voting-app
 
-Run in this directory (`cd swarm-example-voting-app`):
-
+Run in this directory:
 
 	docker-compose pull
 
@@ -117,10 +157,6 @@ Expose the application ports:
 
     docker service update --publish-add 5001:80 app_result
 
-The app will be running at [http://YOUR_EC2_IP:5000](http://YOUR_EC2_IP:5000), and the results will be at [http://YOUR_EC2_IP:5001](http://YOUR_EC2_IP:5001).
+The Voting application will be running at [http://YOUR_EC2_IP:5000](http://YOUR_EC2_IP:5000), and the results of the vote will be at [http://YOUR_EC2_IP:5001](http://YOUR_EC2_IP:5001).
 
-You can use any of the public IPs from your Swarm cluster.
-
-
-
-
+You can use any of the public IPs from your Swarm cluster (the ones that start with 52.x.y.z).
