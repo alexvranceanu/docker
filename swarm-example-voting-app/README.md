@@ -24,7 +24,7 @@ https://github.com/docker/docker-birthday-3/blob/master/tutorial.md#dockercompet
 Getting started in AWS
 ---------------
 
-If you're using a fresh AWS account (you can [create a free account](https://aws.amazon.com)), you will need to first initialize your account by creating a free Centos-7 instance and creating a SSH Key Pair. The tutorial in this page requires your AWS account to be subscribed to the "Centos-7" AMI.
+(30 minutes): If you're using a fresh AWS account (you can [create a free account](https://aws.amazon.com)), you will need to first initialize your account by creating a free Centos-7 instance and creating a SSH Key Pair. The tutorial in this page requires your AWS account to be subscribed to the "Centos-7" AMI.
 
 1. Login to your AWS account
 
@@ -46,7 +46,7 @@ Your AWS account is now ready for the rest of the workshop.
 
 ----------
 
-These steps apply to all meetup workshop participants:
+(1 hour): These steps apply to all meetup workshop participants:
 
 1. Login to your AWS console
 
