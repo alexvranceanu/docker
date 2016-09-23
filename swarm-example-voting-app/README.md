@@ -136,11 +136,14 @@ The docker-compose.yml file from this directory is set up so a bundle can be eas
 This was tested in Docker 1.12.1 and may not work in future version of Docker as it is an experimental feature.
 
 Clone this repository on a Swarm manager node (download and unzip):
+	
+	curl -OL https://github.com/alexvranceanu/docker-meetup-swarm/archive/master.zip
 
-> curl -OL https://github.com/alexvranceanu/docker-meetup-swarm/archive/master.zip
-> sudo yum -y install unzip
-> unzip master.zip
-> cd docker-meetup-swarm-master/swarm-example-voting-app
+	sudo yum -y install unzip
+
+	unzip master.zip
+	
+	cd docker-meetup-swarm-master/swarm-example-voting-app
 
 Run in this directory:
 
